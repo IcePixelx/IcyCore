@@ -22,7 +22,7 @@ export namespace heavensgate
 
 	NTSTATUS __stdcall hkNtAllocateVirtualMemory(HANDLE ProcessHandle, PVOID* BaseAddress, ULONG_PTR ZeroBits, PSIZE_T RegionSize, ULONG AllocationType, ULONG Protect)
 	{
-		return 0xC00000E5; 
+		return 0xC00000E5; // Make it fail as a test.
 	}
 
 	LPVOID GetGateAddress()
@@ -117,7 +117,7 @@ call_original:
 			0x90, 0x90, 0x90                    // nop, nop, nop
 		};
 
-		if (!memcpy(&trampoline_bytes[1], &hook_gate, 4)) // Copy our naked function address into the trampoline.
+		if (!memcpy(&trampoline_bytes[1], &hook_gate, 4)) // Copy our function address into the trampoline.
 			return false;
 
 		new_heavens_gate = VirtualAlloc(nullptr, 16, MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE); // Allocate new memory for the heavens gate copy.

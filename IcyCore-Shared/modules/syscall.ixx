@@ -77,16 +77,16 @@ export namespace syscall
 
 // Windows 7 NtProtectVirtualMemory Assembly
 // 
-//.text:7DE90068 B8 4D 00 00 00                                MOV     EAX, 4Dh;                   // MOV NtProtectVirtualMemory Ordinal into EAX
-//.text:7DE9006D 33 C9                                         XOR     ECX, ECX
-//.text:7DE9006F 8D 54 24 04                                   LEA     EDX, [ESP + arg_0]
-//.text:7DE90073 64 FF 15 C0 00 00 00                          CALL    LARGE DWORD PTR FS : 0C0h   // Call the heavensgate. (Wow64SystemServiceCall)
-//.text:7DE9007A 83 C4 04                                      ADD     ESP, 4                      // Clean up.
-//.text:7DE9007D C2 14 00                                      RETN    14h                         // Stack clean up.
+//.text:7DE90068 B8 4D 00 00 00                                          MOV     EAX, 4Dh;                             // MOV NtProtectVirtualMemory Ordinal into EAX
+//.text:7DE9006D 33 C9                                                   XOR     ECX, ECX
+//.text:7DE9006F 8D 54 24 04                                             LEA     EDX, [ESP + arg_0]
+//.text:7DE90073 64 FF 15 C0 00 00 00                                    CALL    LARGE DWORD PTR FS : 0C0h             // Call the heavensgate. (Wow64SystemServiceCall)
+//.text:7DE9007A 83 C4 04                                                ADD     ESP, 4                                // Clean up.
+//.text:7DE9007D C2 14 00                                                RETN    14h                                   // Stack clean up.
 
 // Windows 10 NtProtectVirtualMemory Assembly
 // 
-//ZwProtectVirtualMemory(x, x, x, x, x)          B8 50 00 00 00                                               MOV     EAX, 50h;                            // MOV NtProtectVirtualMemory Ordinal into EAX.
-//ZwProtectVirtualMemory(x, x, x, x, x) + 5      BA 00 8E 30 4B                                               MOV     EDX, OFFSET _Wow64SystemServiceCall; // MOV Wow64SystemServiceCall (heavensgate) into EDX.
-//ZwProtectVirtualMemory(x, x, x, x, x) + A      FF D2                                                        CALL    EDX; Wow64SystemServiceCall();       // CALL EDX (Wow64SystemServiceCall (heavensgate)).
-//ZwProtectVirtualMemory(x, x, x, x, x) + C      C2 14 00                                                     RETN    14h                                  // Stack clean up.
+//ZwProtectVirtualMemory(x, x, x, x, x)          B8 50 00 00 00           MOV     EAX, 50h;                            // MOV NtProtectVirtualMemory Ordinal into EAX.
+//ZwProtectVirtualMemory(x, x, x, x, x) + 5      BA 00 8E 30 4B           MOV     EDX, OFFSET _Wow64SystemServiceCall; // MOV Wow64SystemServiceCall (heavensgate) into EDX.
+//ZwProtectVirtualMemory(x, x, x, x, x) + A      FF D2                    CALL    EDX; Wow64SystemServiceCall();       // CALL EDX (Wow64SystemServiceCall (heavensgate)).
+//ZwProtectVirtualMemory(x, x, x, x, x) + C      C2 14 00                 RETN    14h                                  // Stack clean up.
