@@ -32,7 +32,8 @@ export namespace syscall
 	}
 
 	NTSTATUS NTAPI NtAllocateVirtualMemory
-	(   HANDLE    ProcessHandle,
+	(   
+		HANDLE    ProcessHandle,
 		PVOID*    BaseAddress,
 		ULONG_PTR ZeroBits,
 		PSIZE_T   RegionSize,
