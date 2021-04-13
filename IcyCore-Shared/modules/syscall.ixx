@@ -2,7 +2,6 @@ module;
 
 #include "Windows.h"
 #include <iostream>
-#include <functional>
 
 export module syscall;
 

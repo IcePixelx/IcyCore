@@ -6,7 +6,6 @@ import syscall;
 
 #define SYSTEMCALL(t) syscall::SystemCall<t>(#t)
 
-
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
                        LPVOID lpReserved

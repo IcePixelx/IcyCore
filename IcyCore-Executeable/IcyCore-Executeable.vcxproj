@@ -145,6 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\IcyCore-Shared\modules\heavensgate.ixx" />
     <ClCompile Include="..\IcyCore-Shared\modules\syscall.ixx" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
