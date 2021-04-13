@@ -28,7 +28,7 @@ export namespace syscall
 
 		}
 
-		return ((T)(T*)proxy); // Return function as template.
+		return reinterpret_cast<T>(reinterpret_cast<T*>(proxy)); // Return function as template.
 	}
 
 	NTSTATUS NTAPI NtAllocateVirtualMemory
