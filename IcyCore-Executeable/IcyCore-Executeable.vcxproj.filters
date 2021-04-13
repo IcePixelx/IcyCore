@@ -2,6 +2,13 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="..\IcyCore-Shared\syscall.ixx" />
+    <ClCompile Include="..\IcyCore-Shared\modules\syscall.ixx">
+      <Filter>modules</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="modules">
+      <UniqueIdentifier>{217c30e5-c549-4759-86df-8cdf8ddb1803}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
