@@ -1,17 +1,17 @@
 #include "Windows.h"
 #include <cstdio>
 #include <iostream>
+#include <vector>
 
 import syscall;
 import heavensgate;
+import memory;
 
 #define SYSTEMCALL(t) syscall::SystemCall<t>(#t)
 
 int main()
 {
-    if (heavensgate::PrepHeavensGate())
-        if (!heavensgate::HookHeavensGate()) 
-            return 0; 
+    //modulemanager::AddModule("ntdll.dll", GetModuleHandleA("ntdll.dll"));
 
     SIZE_T size = 3000;
     PVOID ptr = nullptr;

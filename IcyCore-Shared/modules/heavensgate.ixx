@@ -13,6 +13,7 @@ export namespace heavensgate
 		std::int32_t nt_allocate_virtual_memory = 0x0;
 	}
 
+	// Variables
 	void* new_heavens_gate = nullptr;
 	void* map_return_address = nullptr;
 	HMODULE ntdll = nullptr;
@@ -25,9 +26,9 @@ export namespace heavensgate
 		return 0xC00000E5; // Make it fail as a test.
 	}
 
-	LPVOID GetGateAddress()
+	void* GetGateAddress()
 	{
-		static LPVOID ret_ = nullptr;
+		static void* ret_ = nullptr;
 
 		if (ret_)
 			return ret_;
@@ -77,15 +78,15 @@ call_original:
 
 		if (api && *reinterpret_cast<BYTE*>(api) == 0xB8) // Valid function that performs a system call?
 		{
-			return *reinterpret_cast<DWORD*>(reinterpret_cast<DWORD>(api) + 0x1); // If yes return the next 4 bytes which will be the ordinal.
+			return *reinterpret_cast<std::int32_t*>(reinterpret_cast<std::int32_t>(api) + 0x1); // If yes return the next 4 bytes which will be the ordinal.
 		}
 
 		return -1; // error handling.
 	}
 
-	bool PatchHeavensGate(LPVOID gate_address, void* buffer, const std::size_t size)
+	bool PatchHeavensGate(void* gate_address, void* buffer, const std::ptrdiff_t size)
 	{
-		DWORD old_protect = 0;
+		DWORD old_protect = 0; // Use Windows definitions for passing into Windows API functions.
 		if (!VirtualProtect(gate_address, 16, PAGE_EXECUTE_READWRITE, &old_protect)) // Change the protection of the gate so we can write to it.
 			return false;
 

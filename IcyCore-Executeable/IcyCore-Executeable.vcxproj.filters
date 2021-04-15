@@ -8,6 +8,9 @@
     <ClCompile Include="..\IcyCore-Shared\modules\heavensgate.ixx">
       <Filter>modules</Filter>
     </ClCompile>
+    <ClCompile Include="..\IcyCore-Shared\modules\memory.ixx">
+      <Filter>modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="modules">
