@@ -11,12 +11,12 @@ import memory;
 
 int main()
 {
-    //modulemanager::AddModule("ntdll.dll", GetModuleHandleA("ntdll.dll"));
+    Modulemanager::GetModules();
 
     SIZE_T size = 3000;
     PVOID ptr = nullptr;
-    NTSTATUS test = syscall::NtAllocateVirtualMemory((HANDLE)-1, &ptr, NULL, &size, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
-    NTSTATUS test2 = syscall::NtFreeVirtualMemory((HANDLE)-1, &ptr, &size, MEM_RELEASE);
+    NTSTATUS test = Syscall::NtAllocateVirtualMemory((HANDLE)-1, &ptr, NULL, &size, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+    NTSTATUS test2 = Syscall::NtFreeVirtualMemory((HANDLE)-1, &ptr, &size, MEM_RELEASE);
 
     while (true)
     {

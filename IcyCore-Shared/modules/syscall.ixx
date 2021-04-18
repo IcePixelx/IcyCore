@@ -2,10 +2,11 @@ module;
 
 #include "Windows.h"
 #include <iostream>
+#include <string>
 
 export module syscall;
 
-export namespace syscall
+export namespace Syscall
 {
 	std::int8_t copy_size = -1;
 
@@ -13,7 +14,7 @@ export namespace syscall
 #pragma warning( disable : 6387) // We cannot error check here due to it being a function template. They won't be zero anyway if they were the whole program would crash anyway.
 
 	template<typename T>
-	T SystemCall(const char* ntfunction)
+	T SystemCall(const std::string ntfunction)
 	{
 		static void* proxy = nullptr; // Init proxy.
 
@@ -40,7 +41,7 @@ export namespace syscall
 		{
 			proxy = VirtualAlloc(nullptr, copy_size, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE); // Allocate new code section.
 
-			std::uint32_t* function = reinterpret_cast<std::uint32_t*>(GetProcAddress(GetModuleHandle("ntdll.dll"), ntfunction)); // Grab function.
+			std::uint32_t* function = reinterpret_cast<std::uint32_t*>(GetProcAddress(GetModuleHandle("ntdll.dll"), ntfunction.c_str())); // Grab function.
 
 			memcpy(proxy, function, copy_size); // Copy function into our allocated memory.
 		}
@@ -60,7 +61,7 @@ export namespace syscall
 		ULONG     Protect
 	)
 	{
-		return syscall::SystemCall<NTSTATUS(NTAPI*)(HANDLE, PVOID*, ULONG_PTR, PSIZE_T, ULONG, ULONG)>("NtAllocateVirtualMemory")(ProcessHandle, BaseAddress, ZeroBits, RegionSize, AllocationType, Protect);
+		return Syscall::SystemCall<NTSTATUS(NTAPI*)(HANDLE, PVOID*, ULONG_PTR, PSIZE_T, ULONG, ULONG)>("NtAllocateVirtualMemory")(ProcessHandle, BaseAddress, ZeroBits, RegionSize, AllocationType, Protect);
 	}
 
 	NTSTATUS NTAPI NtFreeVirtualMemory
@@ -71,7 +72,7 @@ export namespace syscall
 		ULONG   FreeType
 	)
 	{
-		return syscall::SystemCall<NTSTATUS(NTAPI*)(HANDLE, PVOID*, PSIZE_T, ULONG)>("NtFreeVirtualMemory")(ProcessHandle, BaseAddress, RegionSize, FreeType);
+		return Syscall::SystemCall<NTSTATUS(NTAPI*)(HANDLE, PVOID*, PSIZE_T, ULONG)>("NtFreeVirtualMemory")(ProcessHandle, BaseAddress, RegionSize, FreeType);
 	}
 }
 

@@ -2,11 +2,14 @@ module;
 
 #include "Windows.h"
 #include <iostream>
+#include <string>
 #include <map>
 
 export module heavensgate;
 
-export namespace heavensgate
+import memory;
+
+export namespace Heavensgate
 {
 	namespace ordinal
 	{
@@ -16,10 +19,10 @@ export namespace heavensgate
 	// Variables
 	void* new_heavens_gate = nullptr;
 	void* map_return_address = nullptr;
-	HMODULE ntdll = nullptr;
+	Modulemanager::MemoryModules* ntdll = nullptr;
 
 	// Pre-Define
-	std::int32_t GetOrdinal(const HMODULE ntdll, const char* ntapi);
+	std::int32_t GetOrdinal(const std::string ntapi);
 
 	NTSTATUS __stdcall hkNtAllocateVirtualMemory(HANDLE ProcessHandle, PVOID* BaseAddress, ULONG_PTR ZeroBits, PSIZE_T RegionSize, ULONG AllocationType, ULONG Protect)
 	{
@@ -64,17 +67,17 @@ call_original:
 
 	bool PrepHeavensGate()
 	{
-		ntdll = GetModuleHandleA("ntdll.dll");
-		ordinal::nt_allocate_virtual_memory = GetOrdinal(ntdll, "NtAllocateVirtualMemory");
+		ntdll = Modulemanager::GetModuleByName("ntdll.dll");
+		ordinal::nt_allocate_virtual_memory = GetOrdinal("NtAllocateVirtualMemory");
 		if (ordinal::nt_allocate_virtual_memory == -1) // Ordinal was not found.
 			return false;
 
 		return true;
 	}
 
-	std::int32_t GetOrdinal(const HMODULE ntdll, const char* ntapi)
+	std::int32_t GetOrdinal(const std::string ntapi)
 	{
-		void* api = GetProcAddress(ntdll, ntapi); // Grab NT function.
+		void* api = GetProcAddress(reinterpret_cast<HMODULE>(ntdll->GetModuleBaseAddress()), ntapi.c_str()); // Grab NT function.
 
 		if (api && *reinterpret_cast<BYTE*>(api) == 0xB8) // Valid function that performs a system call?
 		{

@@ -158,6 +158,8 @@
     <ClCompile Include="IcyCore-DLL\dllmain.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="IcyCore-Shared\modules\heavensgate.ixx" />
+    <ClCompile Include="IcyCore-Shared\modules\memory.ixx" />
     <ClCompile Include="IcyCore-Shared\modules\syscall.ixx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
