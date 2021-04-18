@@ -334,7 +334,7 @@ export namespace Modulemanager
 		const PEB* process_envioronment_block = reinterpret_cast<PEB*>(__readfsdword(0x30)); // Grab process environment block.
 		const LIST_ENTRY* in_load_order_module_list = &process_envioronment_block->LoaderData->InLoadOrderModuleList; // Get the load order of the modules.
 
-		for (LIST_ENTRY* entry = in_load_order_module_list->Flink; entry != in_load_order_module_list; entry = entry->Flink) // This method skips getting self module which we don't need tho.
+		for (LIST_ENTRY* entry = in_load_order_module_list->Flink; entry != in_load_order_module_list; entry = entry->Flink) // This method skips getting self module which we don't need anyway.
 		{
 			const PLDR_DATA_TABLE_ENTRY pldr_entry = reinterpret_cast<PLDR_DATA_TABLE_ENTRY>(entry->Flink); // Get pldr_data from flink.
 			const std::uintptr_t base_dll_address = reinterpret_cast<std::uintptr_t>(pldr_entry->DllBase); // Get DLL base address.
@@ -348,12 +348,12 @@ export namespace Modulemanager
 			std::string module_name = std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(reinterpret_cast<wchar_t*>(pldr_entry->BaseDllName.Buffer));
 #pragma warning( pop ) 
 
-			cached_modules[module_name] = MemoryModules(module_name, base_dll_address); // Push back module information into class.
+			cached_modules[module_name] = MemoryModules(module_name, base_dll_address); // Push back module information into class afterwards the class into the unordered_map.
 		}
 	}
 
 
-	MemoryModules* GetModuleByName(const std::string module_name)
+	MemoryModules* GetModule(const std::string module_name)
 	{
 		if (const auto map_entry = cached_modules.find(module_name); map_entry == cached_modules.end())
 			return nullptr;

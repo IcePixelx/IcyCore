@@ -67,7 +67,7 @@ call_original:
 
 	bool PrepHeavensGate()
 	{
-		ntdll = Modulemanager::GetModuleByName("ntdll.dll");
+		ntdll = Modulemanager::GetModule("ntdll.dll");
 		ordinal::nt_allocate_virtual_memory = GetOrdinal("NtAllocateVirtualMemory");
 		if (ordinal::nt_allocate_virtual_memory == -1) // Ordinal was not found.
 			return false;

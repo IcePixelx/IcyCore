@@ -6,9 +6,11 @@ module;
 
 export module syscall;
 
+import modules;
+
 export namespace Syscall
 {
-	std::int8_t copy_size = -1;
+	SIZE_T copy_size = -1;
 
 #pragma warning( push )
 #pragma warning( disable : 6387) // We cannot error check here due to it being a function template. They won't be zero anyway if they were the whole program would crash anyway.
@@ -39,9 +41,11 @@ export namespace Syscall
 
 		if (!proxy)
 		{
-			proxy = VirtualAlloc(nullptr, copy_size, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE); // Allocate new code section.
+			NTSTATUS allocate_result = Modulemanager::GetModule("ntdll.dll")->GetExportedFunction("NtAllocateVirtualMemory") // Grab NtAllocateVirtualMemory export and call it to allocate a new code section.
+				.R_Cast<NTSTATUS(NTAPI*)(HANDLE, PVOID*, ULONG_PTR, PSIZE_T, ULONG, ULONG)>() // Function cast.
+				(reinterpret_cast<HANDLE>(-1), &proxy, NULL, &copy_size, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE); // Arguments of function.
 
-			std::uint32_t* function = reinterpret_cast<std::uint32_t*>(GetProcAddress(GetModuleHandle("ntdll.dll"), ntfunction.c_str())); // Grab function.
+			std::uint32_t* function = Modulemanager::GetModule("ntdll.dll")->GetExportedFunction(ntfunction).R_Cast<std::uint32_t*>(); // Grab function.
 
 			memcpy(proxy, function, copy_size); // Copy function into our allocated memory.
 		}
