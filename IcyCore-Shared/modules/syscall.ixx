@@ -41,7 +41,7 @@ export namespace Syscall
 
 		if (!proxy)
 		{
-			NTSTATUS allocate_result = Modulemanager::GetModule("ntdll.dll")->GetExportedFunction("NtAllocateVirtualMemory") // Grab NtAllocateVirtualMemory export and call it to allocate a new code section.
+			const NTSTATUS allocate_result = Modulemanager::GetModule("ntdll.dll")->GetExportedFunction("NtAllocateVirtualMemory") // Grab NtAllocateVirtualMemory export and call it to allocate a new code section.
 				.R_Cast<NTSTATUS(NTAPI*)(HANDLE, PVOID*, ULONG_PTR, PSIZE_T, ULONG, ULONG)>() // Function cast.
 				(reinterpret_cast<HANDLE>(-1), &proxy, NULL, &copy_size, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE); // Arguments of function.
 
@@ -77,6 +77,18 @@ export namespace Syscall
 	)
 	{
 		return Syscall::SystemCall<NTSTATUS(NTAPI*)(HANDLE, PVOID*, PSIZE_T, ULONG)>("NtFreeVirtualMemory")(ProcessHandle, BaseAddress, RegionSize, FreeType);
+	}
+
+	NTSTATUS NTAPI NtProtectVirtualMemory
+	(
+		HANDLE ProcessHandle,
+		PVOID* BaseAddress,
+		PULONG NumberOfBytesToProtect,
+		ULONG NewAccessProtection,
+		PULONG OldAccessProtection
+	)
+	{
+		return Syscall::SystemCall<NTSTATUS(NTAPI*)(HANDLE, PVOID*, PULONG, ULONG, PULONG)>("NtProtectVirtualMemory")(ProcessHandle, BaseAddress, NumberOfBytesToProtect, NewAccessProtection, OldAccessProtection);
 	}
 }
 

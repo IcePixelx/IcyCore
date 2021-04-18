@@ -13,6 +13,7 @@ import heavensgate;
 int main()
 {
     Modulemanager::GetModules();
+    Heavensgate::HookHeavensGate();
 
     SIZE_T size = 3000;
     PVOID ptr = nullptr;

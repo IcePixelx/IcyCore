@@ -8,6 +8,7 @@ module;
 export module heavensgate;
 
 import modules;
+import syscall;
 
 export namespace Heavensgate
 {
@@ -53,7 +54,7 @@ export namespace Heavensgate
 
 hook_nt_allocate_virtual_memory:
 			mov eax, hkNtAllocateVirtualMemory // Move our func into eax.
-			mov[esp + 0], eax // Replace latest returnaddr with our func this will cause the original function to jump to our hook instead of its supposed destination.
+			mov [esp + 0], eax // Replace latest returnaddr with our func this will cause the original function to jump to our hook instead of its supposed destination.
 			// From observing the last returnaddress always resides in [esp + 0].
 			// With this we can modify eax which will be the return value after the actual syscall in 64bit went through.
 			// So now we can modify parameters when our hook gets called and the returnvalue which gives us the complete control as when using a normal hook.
@@ -87,16 +88,24 @@ call_original:
 		return -1; // error handling.
 	}
 
-	bool PatchHeavensGate(void* gate_address, void* buffer, const std::ptrdiff_t size)
+	bool PatchHeavensGate(void* gate_address, const void* buffer, const std::ptrdiff_t size)
 	{
-		DWORD old_protect = 0; // Use Windows definitions for passing into Windows API functions.
-		if (!VirtualProtect(gate_address, 16, PAGE_EXECUTE_READWRITE, &old_protect)) // Change the protection of the gate so we can write to it.
+		ULONG protect_size = 16;
+		ULONG old_protection = 0;
+
+		// Change heavensgate page protection so we can write to it.
+		if (const NTSTATUS protect_status = Syscall::NtProtectVirtualMemory(reinterpret_cast<HANDLE>(-1), &gate_address, &protect_size, PAGE_EXECUTE_READWRITE, &old_protection);
+			protect_status != 0) // 0 is STATUS_SUCCESS.
 			return false;
 
-		if (!memcpy(gate_address, buffer, size)) // Patch the gate.
+		if (!memcpy(gate_address, buffer, size)) // Patch the gate so it points to our hook.
 			return false;
 
-		if (!VirtualProtect(gate_address, 16, old_protect, &old_protect)) // Restore protection of the gate.
+		protect_size = 16; // NtProtectvirtualMemory modifies protect_size to 1000 so we need to reset it.
+
+		// Restore page protection.
+		if (const NTSTATUS protect_status = Syscall::NtProtectVirtualMemory(reinterpret_cast<HANDLE>(-1), &gate_address, &protect_size, old_protection, &old_protection);
+			protect_status != 0) // 0 is STATUS_SUCCESS.
 			return false;
 
 		return true;
@@ -104,16 +113,16 @@ call_original:
 
 	bool HookHeavensGate()
 	{
+		if (!PrepHeavensGate())
+			return false;
+
 		if (!GetGateAddress())
 			return false;
 
-		void* hook_gate = &hkWow64Transition; // Grab our hooks addr.
-
-		if (!hook_gate)
-			return false;
+		void* hook_gate = &hkWow64Transition; // Grab the address of our hooking function.
 
 		// Push Detour.
-		// Basically a jmp but we push a new returnaddr onto the stack and pop it with ret to get to that location.
+		// Basically a jmp but we push a new returnaddress onto the stack and pop it with ret to get to that location.
 		std::uint8_t trampoline_bytes[] =
 		{
 			0x68, 0x00, 0x00, 0x00, 0x00,       // push 0xADDRESS
@@ -124,11 +133,16 @@ call_original:
 		if (!memcpy(&trampoline_bytes[1], &hook_gate, 4)) // Copy our function address into the trampoline.
 			return false;
 
-		new_heavens_gate = VirtualAlloc(nullptr, 16, MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE); // Allocate new memory for the heavens gate copy.
-		if (!new_heavens_gate)
+		// Allocate a new code section.
+		SIZE_T allocate_size = 16;
+		if (const NTSTATUS allocate_result = Syscall::NtAllocateVirtualMemory(reinterpret_cast<HANDLE>(-1), &new_heavens_gate, NULL, &allocate_size, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+			allocate_result != 0) // 0 is STATUS_SUCCESS.
 			return false;
 
-		if (!memcpy(new_heavens_gate, GetGateAddress(), 9)) // Copy the gate into our allocated memory.
+		if (!new_heavens_gate) // Is the gate valid?
+			return false;
+
+		if (!memcpy(new_heavens_gate, GetGateAddress(), 9)) // Copy the gate into our allocated code section.
 			return false;
 
 		if (!PatchHeavensGate(GetGateAddress(), trampoline_bytes, sizeof(trampoline_bytes))) // Patch the gate.
