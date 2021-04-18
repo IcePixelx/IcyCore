@@ -93,6 +93,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableModules>true</EnableModules>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -108,6 +109,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableModules>true</EnableModules>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -147,6 +149,7 @@
   <ItemGroup>
     <ClCompile Include="..\IcyCore-Shared\modules\heavensgate.ixx" />
     <ClCompile Include="..\IcyCore-Shared\modules\memory.ixx" />
+    <ClCompile Include="..\IcyCore-Shared\modules\modules.ixx" />
     <ClCompile Include="..\IcyCore-Shared\modules\syscall.ixx" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>

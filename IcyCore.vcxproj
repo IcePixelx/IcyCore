@@ -160,6 +160,7 @@
     </ClCompile>
     <ClCompile Include="IcyCore-Shared\modules\heavensgate.ixx" />
     <ClCompile Include="IcyCore-Shared\modules\memory.ixx" />
+    <ClCompile Include="IcyCore-Shared\modules\modules.ixx" />
     <ClCompile Include="IcyCore-Shared\modules\syscall.ixx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

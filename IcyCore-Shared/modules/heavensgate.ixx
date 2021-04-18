@@ -7,7 +7,7 @@ module;
 
 export module heavensgate;
 
-import memory;
+import modules;
 
 export namespace Heavensgate
 {

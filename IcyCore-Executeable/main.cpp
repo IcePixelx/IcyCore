@@ -4,8 +4,9 @@
 #include <vector>
 
 import syscall;
-import heavensgate;
 import memory;
+import modules;
+import heavensgate;
 
 #define SYSTEMCALL(t) syscall::SystemCall<t>(#t)
 
