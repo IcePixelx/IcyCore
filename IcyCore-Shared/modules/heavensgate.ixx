@@ -9,6 +9,7 @@ export module heavensgate;
 
 import modules;
 import syscall;
+import memory;
 
 export namespace Heavensgate
 {
@@ -30,18 +31,28 @@ export namespace Heavensgate
 		return 0xC00000E5; // Make it fail as a test.
 	}
 
-	void* GetGateAddress()
+	/* This function returns the Heavensgate address.
+	*  We grab it from an export that the 32bit ntdll.dll exports for us.
+	*  We dereference it once because it return a pointer to the actual location.
+	*  But we want the definitive address that is why we derefence.
+	*/
+
+	MemoryAddress GetGateAddress()
 	{
-		static void* ret_ = nullptr;
-
-		if (ret_)
-			return ret_;
-
-		__asm mov eax, dword ptr fs : [0xC0] // Grab the fastsyscall addr from TIB.
-		__asm mov ret_, eax // Move it into our retn value.
-
-		return ret_; // Return the gate addr.
+		return ntdll->GetExportedFunction("Wow64Transition").DerefSelf();
 	}
+
+	/* This function is our hook for the Wow64 Transition Table.
+	*  This functions does not have any parameters. __declspec(naked) is used so the compiler doesn't generate assembly that could mess upt he stack.
+	*  It uses in-line assembly to identify the currently called function and if its a function we wanna hook we manipulate the return address.
+	*  So instead of the call order being.
+	*  calle function > ntdll 32bit > wow64cpu > ntdll 64bit > windows kernel driver > ntdll 64bit > wow64cpu > ntdll 32 bit > callee function
+
+	*  We manipulate it to be.
+	*  calle function > ntdll 32bit > wow64cpu > ntdll 64bit > windows kernel driver > ntdll 64bit > wow64cpu > ntdll 32 bit > OUR HOOK > callee function
+	
+	*  That allows us to change the return value and manipulate parameters before the callee function gets actual access to it.
+	*/
 
 	void __declspec(naked) hkWow64Transition()
 	{
