@@ -73,12 +73,12 @@ public:
 		return *reinterpret_cast<T*>(ptr) / 4; // Divide by 4 to get actual virtual function index.
 	}
 
-	MemoryAddress Offset(const std::ptrdiff_t offset)
+	MemoryAddress Offset(const std::ptrdiff_t offset = 0x1)
 	{
 		return MemoryAddress(ptr + offset);
 	}
 
-	MemoryAddress OffsetSelf(const std::ptrdiff_t offset)
+	MemoryAddress OffsetSelf(const std::ptrdiff_t offset = 0x1)
 	{
 		ptr += offset;
 		return *this;

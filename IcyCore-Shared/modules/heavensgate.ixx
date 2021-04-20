@@ -78,11 +78,11 @@ call_original:
 
 	std::int32_t GetOrdinal(const std::string ntapi)
 	{
-		void* api = GetProcAddress(reinterpret_cast<HMODULE>(ntdll->GetModuleBaseAddress()), ntapi.c_str()); // Grab NT function.
+		MemoryAddress api = ntdll->GetExportedFunction(ntapi);
 
-		if (api && *reinterpret_cast<BYTE*>(api) == 0xB8) // Valid function that performs a system call?
+		if (api && api.CheckBytes({ 0xB8 })) // Valid function that performs a system call?
 		{
-			return *reinterpret_cast<std::int32_t*>(reinterpret_cast<std::int32_t>(api) + 0x1); // If yes return the next 4 bytes which will be the ordinal.
+			return api.OffsetSelf().GetValue<std::int32_t>(); // If yes return the next 4 bytes which will be the ordinal.
 		}
 
 		return -1; // error handling.
