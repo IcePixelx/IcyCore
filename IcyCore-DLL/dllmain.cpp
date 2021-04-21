@@ -20,13 +20,18 @@ import modules;
 *
 *   @calling convention: APIENTRY (__stdcall)
 *   @parameters:         HMODULE module holds the module causing the call, DWORD ul_reason_for_call holds the reason on why DllMain got called, LPVOID reserved if the process is getting terminated its non NULL.
-*   @return:             Either true or false.
+*   @return:             Either true or false depending on what we return.
 */
 
 BOOL APIENTRY DllMain(HMODULE module, DWORD ul_reason_for_call, LPVOID reserved)
 {
     switch (ul_reason_for_call)
     {
+    case DLL_PROCESS_DETACH:
+    {
+        // TODO RESTORE HEAVENSGATE.
+        break;
+    }
     case DLL_PROCESS_ATTACH:
     {
         Modulemanager::GetModules(); // Get all modules from the process environment block.
@@ -45,8 +50,10 @@ BOOL APIENTRY DllMain(HMODULE module, DWORD ul_reason_for_call, LPVOID reserved)
         return TRUE;
     }
     case DLL_THREAD_ATTACH:
+        break;
     case DLL_THREAD_DETACH:
-    case DLL_PROCESS_DETACH:
+        break;
+    default: 
         break;
     }
 

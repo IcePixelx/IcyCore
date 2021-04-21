@@ -15,11 +15,11 @@ export namespace Heavensgate
 {
 	namespace Ordinal
 	{
-		std::int32_t nt_allocate_virtual_memory = 0x0; // The ordinal index for NtAllocateVirtualMemory
+		std::int32_t nt_allocate_virtual_memory = 0x0; // The ordinal index for NtAllocateVirtualMemory.
 	}
 
-	void* new_heavens_gate = nullptr; // Future new memory location of the 'Heavensgate'
-	Modulemanager::MemoryModules* ntdll = nullptr; // Pointer to ntdll.dll
+	void* new_heavens_gate = nullptr; // Future new memory location of the 'Heavensgate'.
+	Modulemanager::MemoryModules* ntdll = nullptr; // Pointer to ntdll.dll.
 
 	/*
 	*  This is our function that NtAllocateVirtualMemory calls will get redirected to before reaching the callee.
@@ -216,7 +216,7 @@ call_original:
 			allocate_result != 0) // 0 is STATUS_SUCCESS.
 			return false;
 
-		if (!new_heavens_gate) // Is the allocated code section valid?
+		if (!new_heavens_gate) // Is the newly allocated code section valid?
 			return false;
 
 		if (!memcpy(new_heavens_gate, GetGateAddress(), 9)) // Copy the gate into our allocated code section.

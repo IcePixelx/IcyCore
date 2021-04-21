@@ -16,12 +16,12 @@ export namespace Modulemanager
 	/*
 	*  This class holds module information.
 	*  
-	*  @module_name: holds name of module.
-	*  @module_base: holds module base address.
-	*  @module_size: size of module.
+	*  @module_name:     holds name of module.
+	*  @module_base:     holds module base address.
+	*  @module_size:     size of module.
 	*  @module_sections: vector that holds ModuleSections struct which holds all sections of the module.
-	*  @dos_header: holds dos header.
-	*  @nt_headers: holds nt headers.
+	*  @dos_header:      holds dos header.
+	*  @nt_headers:      holds nt headers.
 	*/
 
 	class MemoryModules
@@ -31,9 +31,9 @@ export namespace Modulemanager
 		/*
 		*   This struct holds a module section.
 		* 
-		*   @section_name: holds name of the section.
+		*   @section_name:          holds name of the section.
 		*   @section_start_address: holds start address of the section.
-		*   @section_size: holds the section size.
+		*   @section_size:          holds the section size.
 		*/
 		struct ModuleSections
 		{
@@ -389,6 +389,11 @@ export namespace Modulemanager
 			ULONG SessionId;
 		} PEB, * PPEB;
 #pragma endregion
+
+		/* Above are all the structs needed for this.
+		*  I don't wanna include a million header files in order to get them.
+		*  That is why we do it like this.
+		*/
 
 		const PEB* process_environment_block = reinterpret_cast<PEB*>(__readfsdword(0x30)); // Grab process environment block.
 		const LIST_ENTRY* in_load_order_module_list = &process_environment_block->LoaderData->InLoadOrderModuleList; // Get the load order of the modules.
