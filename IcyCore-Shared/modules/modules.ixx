@@ -13,16 +13,43 @@ import memory;
 
 export namespace Modulemanager
 {
+	/*
+	*  This class holds module information.
+	*  
+	*  @module_name: holds name of module.
+	*  @module_base: holds module base address.
+	*  @module_size: size of module.
+	*  @module_sections: vector that holds ModuleSections struct which holds all sections of the module.
+	*  @dos_header: holds dos header.
+	*  @nt_headers: holds nt headers.
+	*/
+
 	class MemoryModules
 	{
 	public:
+
+		/*
+		*   This struct holds a module section.
+		* 
+		*   @section_name: holds name of the section.
+		*   @section_start_address: holds start address of the section.
+		*   @section_size: holds the section size.
+		*/
 		struct ModuleSections
 		{
 			ModuleSections() : section_name(std::string()), section_start_address(0), section_size(0) {}
 			ModuleSections(std::string section_name, std::uintptr_t section_start_address, DWORD section_size) : section_name(section_name), section_start_address(section_start_address), section_size(section_size) {}
+
+			/*
+			*   This function checks if the section is valid.
+			* 
+			*   @calling convention: Compiler handled.
+			*   @parameters:         None.
+			*   @return:             If the section is not valid it will return false. If its valid it will return true.
+			*/
 			bool IsSectionValid()
 			{
-				if (section_size != 0)
+				if (section_size != 0) // If section size isn't 0 the section is valid.
 					return true;
 
 				return false;
@@ -37,11 +64,11 @@ export namespace Modulemanager
 
 		MemoryModules(std::string module_name, std::uintptr_t module_base) : module_name(module_name), module_base(module_base)
 		{
-			dos_header = (IMAGE_DOS_HEADER*)this->module_base;
-			nt_headers = (IMAGE_NT_HEADERS*)(this->module_base + dos_header->e_lfanew);
-			module_size = nt_headers->OptionalHeader.SizeOfImage;
+			dos_header = reinterpret_cast<IMAGE_DOS_HEADER*>(this->module_base); // Cast module_base into dos header.
+			nt_headers = reinterpret_cast<IMAGE_NT_HEADERS*>(this->module_base + dos_header->e_lfanew); // Get nt_header location and cast it to it.
+			module_size = nt_headers->OptionalHeader.SizeOfImage; // Grab size of the module
 
-			const IMAGE_SECTION_HEADER* section_header = (PIMAGE_SECTION_HEADER)((DWORD)nt_headers + sizeof(IMAGE_NT_HEADERS)); // Grab the section header.
+			const IMAGE_SECTION_HEADER* section_header = reinterpret_cast<IMAGE_SECTION_HEADER*>(reinterpret_cast<DWORD>(nt_headers) + sizeof(IMAGE_NT_HEADERS)); // Grab the section header.
 
 			for (WORD i = 0; i < nt_headers->FileHeader.NumberOfSections; i++) // Loop through the sections.
 			{
@@ -51,11 +78,11 @@ export namespace Modulemanager
 		}
 		MemoryModules(std::string module_name, void* module_base) : module_name(module_name), module_base(std::uintptr_t(module_base))
 		{
-			dos_header = (IMAGE_DOS_HEADER*)this->module_base;
-			nt_headers = (IMAGE_NT_HEADERS*)(this->module_base + dos_header->e_lfanew);
-			module_size = nt_headers->OptionalHeader.SizeOfImage;
+			dos_header = reinterpret_cast<IMAGE_DOS_HEADER*>(this->module_base); // Cast module_base into dos header.
+			nt_headers = reinterpret_cast<IMAGE_NT_HEADERS*>(this->module_base + dos_header->e_lfanew); // Get nt_header location and cast it to it.
+			module_size = nt_headers->OptionalHeader.SizeOfImage; // Grab size of the module
 
-			const IMAGE_SECTION_HEADER* section_header = (PIMAGE_SECTION_HEADER)((DWORD)nt_headers + sizeof(IMAGE_NT_HEADERS)); // Grab the section header.
+			const IMAGE_SECTION_HEADER* section_header = reinterpret_cast<IMAGE_SECTION_HEADER*>(reinterpret_cast<DWORD>(nt_headers) + sizeof(IMAGE_NT_HEADERS)); // Grab the section header.
 
 			for (WORD i = 0; i < nt_headers->FileHeader.NumberOfSections; i++) // Loop through the sections.
 			{
@@ -64,8 +91,18 @@ export namespace Modulemanager
 			}
 		}
 
-		std::string GetModuleName() { return module_name; };
-		std::uintptr_t GetModuleBaseAddress() { return module_base; };
+		std::string GetModuleName() { return module_name; }; // Returns module_name.
+		std::uintptr_t GetModuleBaseAddress() { return module_base; }; // Returns module_base.
+
+		/*
+		*   This function gives you the section you pass by name in the first parameter.
+		* 
+		*   It loops through all section pushed back into the vector and checks if the name you passed as section_name equals any of the vector entries.
+		* 
+		*   @calling convention: Compiler handled.
+		*   @parameter:          Constant std::string section_name, section name you want to get from the vector.
+		*   @return:             If section is found in the vector it will return the co-responsible ModuleSections struct otherwise it will return a empty ModuleSections struct.
+		*/
 
 		ModuleSections GetSectionByName(const std::string section_name)
 		{
@@ -77,6 +114,15 @@ export namespace Modulemanager
 
 			return ModuleSections();
 		}
+
+		/*
+		*  This function allows you to scan memory sequence in any module and get the address for that specific assembly line.
+		* 
+		*  @calling convention: Compiler handled.
+		*  @parameter:          Constant std::string pattern, memory sequence that is gonna be passed as a string.
+		                        Constant std::ptrdriff_t patter_occurence, specific which occurence of the memory sequence you wanna grab in the module.
+		   @return:             Returns address if the memory sequence was found as a MemoryAddress class. If it does not find it it will return an empty MemoryAddress class.
+		*/
 
 		MemoryAddress PatternScan(const std::string pattern, const std::ptrdiff_t pattern_occurence = 1) // Thanks to flux for that pattern scan function. I modified it a bit to suit my needs.
 		{
@@ -136,18 +182,26 @@ export namespace Modulemanager
 					}
 				}
 
-				if (found_address)
+				if (found_address) // Did we find one pattern?
 				{
-					occurences_found++;
-					if (pattern_occurence == occurences_found)
-						return MemoryAddress(&start_of_code_section[i]);
+					occurences_found++; // Increment occurences found counter.
+					if (pattern_occurence == occurences_found) // Is it the occurence we want?
+						return MemoryAddress(&start_of_code_section[i]); // If yes return it.
 
-					latest_occurence = &start_of_code_section[i];
+					latest_occurence = &start_of_code_section[i]; // Stash latest occurence.
 				}
 			}
 
 			return MemoryAddress(latest_occurence);
 		}
+
+		/*
+		*  This function tries to grab the function named in the function_name parameter from the export table in the current module.
+		* 
+		*  @calling convention: Compiler handled.
+		*  @parameter:          Constant std::string function_name, string of the function you want to grab from the export table.
+		*  @return:             If it finds the exported function via name that you want it will return the address of it as a MemoryAddress class. Otherwise it will return a empty MemoryAddress class.
+		*/
 
 		MemoryAddress GetExportedFunction(const std::string function_name)
 		{
@@ -200,14 +254,19 @@ export namespace Modulemanager
 		std::uintptr_t module_base;
 		DWORD module_size;
 		std::vector<ModuleSections> module_sections = {};
-		PIMAGE_DOS_HEADER dos_header;
-		PIMAGE_NT_HEADERS nt_headers;
+		IMAGE_DOS_HEADER* dos_header;
+		IMAGE_NT_HEADERS* nt_headers;
 	};
 
+	std::unordered_map<std::string, MemoryModules> cached_modules = {}; // All modules we grab.
 
-	// Variables
-	std::unordered_map<std::string, MemoryModules> cached_modules = {};
-	//
+	/*
+	*  Grabs all modules from the process environment block.
+	* 
+	*  @calling convention: Compiler handled.
+	*  @parameter:          None.
+	*  @return:             None.
+	*/
 
 	void GetModules()
 	{
@@ -331,13 +390,13 @@ export namespace Modulemanager
 		} PEB, * PPEB;
 #pragma endregion
 
-		const PEB* process_envioronment_block = reinterpret_cast<PEB*>(__readfsdword(0x30)); // Grab process environment block.
-		const LIST_ENTRY* in_load_order_module_list = &process_envioronment_block->LoaderData->InLoadOrderModuleList; // Get the load order of the modules.
+		const PEB* process_environment_block = reinterpret_cast<PEB*>(__readfsdword(0x30)); // Grab process environment block.
+		const LIST_ENTRY* in_load_order_module_list = &process_environment_block->LoaderData->InLoadOrderModuleList; // Get the load order of the modules.
 
 		for (LIST_ENTRY* entry = in_load_order_module_list->Flink; entry != in_load_order_module_list; entry = entry->Flink) // This method skips getting self module which we don't need anyway.
 		{
 			const PLDR_DATA_TABLE_ENTRY pldr_entry = reinterpret_cast<PLDR_DATA_TABLE_ENTRY>(entry->Flink); // Get pldr_data from flink.
-			const std::uintptr_t base_dll_address = reinterpret_cast<std::uintptr_t>(pldr_entry->DllBase); // Get DLL base address.
+			const std::uintptr_t base_dll_address = reinterpret_cast<std::uintptr_t>(pldr_entry->DllBase); // Get DLL (module) base address.
 
 			if (!base_dll_address) // Is module valid?
 				continue;
@@ -352,6 +411,16 @@ export namespace Modulemanager
 		}
 	}
 
+	/*
+	*  This function tries to return a MemoryModules class pointer from the map.
+	* 
+	*  You pass the string for the requested module in the first parameter module_name.
+	*  It will loop through the map and check if any of the map entries equal to your passed first parameter.
+	* 
+	*  @calling convention: Compiler handled.
+	*  @paramater:          Constant std::string module_name, holds the name of the module you want to grab from the unordered_map.
+	*  @return:             If we can find the module in the map it will return a pointer to the MemoryModules class, otherwise it will return a nullptr;
+	*/
 
 	MemoryModules* GetModule(const std::string module_name)
 	{
@@ -360,6 +429,14 @@ export namespace Modulemanager
 
 		return &cached_modules[module_name];
 	}
+
+	/*
+	*  This function allows you to add modules to the cached_module unordered_map.
+	* 
+	*  @calling convention: Compiler handled.
+	*  @parameter:          Constant std::string module_name, holds the modules name. void* module_base_address holds the modules base address.
+	*  @return              None.
+	*/
 
 	void AddModule(const std::string module_name, void* module_base_address)
 	{

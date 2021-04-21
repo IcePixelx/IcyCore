@@ -10,20 +10,29 @@ import modules;
 
 export namespace Syscall
 {
-	SIZE_T copy_size = -1;
+	SIZE_T copy_size = -1; // Copy size for certain Windows version.
 
 #pragma warning( push )
 #pragma warning( disable : 6387) // We cannot error check here due to it being a function template. They won't be zero anyway if they were the whole program would crash anyway.
 
+	/*
+	*  This function is a template that performs a system call.
+	*  The function gets casted to the template that gets provided when the function gets called.
+	* 
+	*  @calling convention: Compiler handled.
+	*  @parameters:         Constant std::string ntfunction, string that holds the function we wanna perform a system call with
+	*  @return:             Returns template function call, in this case it will be a system call and the return outcome will be NTSTATUS.
+	*/
+
 	template<typename T>
 	T SystemCall(const std::string ntfunction)
 	{
-		static void* proxy = nullptr; // Init proxy.
+		static void* proxy = nullptr; // Initialize proxy variable.
 
 		if (copy_size == -1)
 		{
 			OSVERSIONINFOEX result = { sizeof(OSVERSIONINFOEX), 0, 0, 0, 0, {'\0'}, 0, 0, 0, 0, 0 }; // Initialize new struct.
-			reinterpret_cast<NTSTATUS(NTAPI*)(LPOSVERSIONINFO lpVersionInformation)>(GetProcAddress(GetModuleHandleA("ntdll.dll"), "RtlGetVersion"))((LPOSVERSIONINFO)&result); // Call RtlGetVersion and fill our struct.
+			Modulemanager::GetModule("ntdll.dll")->GetExportedFunction("RtlGetVersion").R_Cast<NTSTATUS(NTAPI*)(LPOSVERSIONINFO lpVersionInformation)>()((LPOSVERSIONINFO)&result); // Call RtlGetVersion and fill our result struct.
 
 			switch (result.dwMajorVersion) // Check which version of windows we have. The syscalls from Windows 7 to Windows 10 are different so we need to adjust the bytes we copy. Differences at end of file.
 			{
@@ -45,15 +54,23 @@ export namespace Syscall
 				.R_Cast<NTSTATUS(NTAPI*)(HANDLE, PVOID*, ULONG_PTR, PSIZE_T, ULONG, ULONG)>() // Function cast.
 				(reinterpret_cast<HANDLE>(-1), &proxy, NULL, &copy_size, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE); // Arguments of function.
 
-			std::uint32_t* function = Modulemanager::GetModule("ntdll.dll")->GetExportedFunction(ntfunction).R_Cast<std::uint32_t*>(); // Grab function.
+			std::uint32_t* function = Modulemanager::GetModule("ntdll.dll")->GetExportedFunction(ntfunction).R_Cast<std::uint32_t*>(); // Grab NT Function.
 
-			memcpy(proxy, function, copy_size); // Copy function into our allocated memory.
+			memcpy(proxy, function, copy_size); // Copy function into our newly allocated code section.
 		}
 
 		return reinterpret_cast<T>(reinterpret_cast<T*>(proxy)); // Return function as template.
 	}
 
 #pragma warning( pop ) 
+
+	/*
+	*  Wrapper function that performs a system call as NtAllocateVirtualMemory.
+	* 
+	*  @calling convention: __stdcall (NTAPI)
+	*  @parameters:         Parameters are the same as NtAllocateVirtualMemory. Nothing to say about here.
+	*  @return:             Will return NTSTATUS of the system call as a result.
+	*/
 
 	NTSTATUS NTAPI NtAllocateVirtualMemory
 	(   
@@ -68,6 +85,14 @@ export namespace Syscall
 		return Syscall::SystemCall<NTSTATUS(NTAPI*)(HANDLE, PVOID*, ULONG_PTR, PSIZE_T, ULONG, ULONG)>("NtAllocateVirtualMemory")(ProcessHandle, BaseAddress, ZeroBits, RegionSize, AllocationType, Protect);
 	}
 
+	/*
+	*  Wrapper function that performs a system call as NtFreeVirtualMemory.
+	*
+	*  @calling convention: __stdcall (NTAPI)
+	*  @parameters:         Parameters are the same as NtFreeVirtualMemory. Nothing to say about here.
+	*  @return:             Will return NTSTATUS of the system call as a result.
+	*/
+
 	NTSTATUS NTAPI NtFreeVirtualMemory
 	(
 		HANDLE  ProcessHandle,
@@ -78,6 +103,14 @@ export namespace Syscall
 	{
 		return Syscall::SystemCall<NTSTATUS(NTAPI*)(HANDLE, PVOID*, PSIZE_T, ULONG)>("NtFreeVirtualMemory")(ProcessHandle, BaseAddress, RegionSize, FreeType);
 	}
+
+	/*
+	*  Wrapper function that performs a system call as NtProtectVirtualMemory.
+	* 
+	*  @calling convetion: __stdcall (NTAPI)
+	*  @parameters:        Parameters are the same as NtFreeVirtualMemory. Nothing to say about here.
+	*  @return:            Will return NTSTATUS of the system call as a result.
+	*/
 
 	NTSTATUS NTAPI NtProtectVirtualMemory
 	(
