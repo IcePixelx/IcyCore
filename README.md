@@ -16,8 +16,6 @@ It removes the possible interactions of the process you want to analyze, interce
 
 Currently, it needs to be updated so that it does not crash the IcyCore analyzing tool if the function you want to perform a system call with is hooked.
 
-The easy solution is to manually rebuild the function body which will be done very soon!
-
 It works by allocating a new code section, copies the full function into that new code section, and calls that instead.
 
 Future implementation will include rebuilding the function body and copying that into the allocated code section.
