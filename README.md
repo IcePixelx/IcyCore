@@ -13,7 +13,7 @@ Currently it has following features which will be keep being expanded in the fut
 This allows you to perform system call for NTAPI functions.
 It removes the possible interaction of the process you wanna analyze intercepting calls via hooks on NTAPI functions.
 
-Currently it has to be updated so it does not crash the IcyCore analyzing tool if the function you wanna perform a system call is hooked.
+Currently it has to be updated so it does not crash the IcyCore analyzing tool if the function you wanna perform a system call on is hooked.
 
 Easy solution is to manually rebuild the function body which will come very soon!
 
