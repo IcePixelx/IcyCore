@@ -92,7 +92,7 @@ Zukünftige implementation wird seien das die Funktion nachgestellt wird und dan
 
 Hiermit können wir jeden System Call abfangen der im Prozess stattfindet.
 
-System calls müssen von 32-bit in 64-bit umgewandelt werden deshalb hooken wir die Code Sektion die dafür verantwortlich ist in den 64-bit Adress Space zu springen.
+System calls müssen von 32-bit in 64-bit umgewandelt werden deshalb hooken wir die Code Sektion die dafür verantwortlich ist in den 64-bit Address Space zu springen.
 
 Von dort aus manipulieren wir die Rückkehraddresse so das diese zur jeweiligen Ersatz Funktion hinführt bevor diese wieder zurück zum Aufrufer geht.
 
