@@ -84,9 +84,9 @@ Wenn wir normalerweise die Funktion aus dem Export Table holen und die so aufruf
 
 Die Methode wie der System Call durchgeführt wird muss noch geändert werden. Wenn die Funktion Detour Hooked ist mit der man einen System Call durchführen möchte wird das Programm abstürzen.
 
-Es funktioniert dar durch das es eine neue Code Sektion erstellt und die komplette Funktion einfach in die neues Code Sektion reinkopiert und diese anstattdessen aufruft.
+Es funktioniert da wir eine neue Code Sektion erstellt und die komplette Funktion einfach in die neues Code Sektion reinkopiert und diese anstattdessen aufruft.
 
-Zukünftige implementation wird seien das die Funktion nachgestellt wird und dann in eine neue Code Sektion kopiert wird und diese stattdessen aufgerufen wird.
+Zukünftige implementation wird sein das die Funktion nachgestellt wird und dann in eine neue Code Sektion kopiert wird und diese stattdessen aufgerufen wird.
 
 # Wow64Transition hooking (Heavensgate hooking)
 
