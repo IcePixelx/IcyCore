@@ -112,7 +112,7 @@ Und noch mehr Funktionen die bald hinzugefügt werden!
 
 # MemoryModules
 
-Dies ist eine Klasse was basische Informationen über Modules (dynamisch verknüpfte Bibliotheken) besitzen wird.
+Dies ist eine Klasse welche basische Informationen über Modules (dynamisch verknüpfte Bibliotheken) besitzen wird.
 
 Es ist in einem namespace da es sub-funktionen gibt die alle Module aus dem Prozessblock holt und diese in eine unordered_map platziert.
 
