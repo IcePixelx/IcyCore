@@ -6,6 +6,8 @@ This project started on the 13th April 2021 as an example for job applications f
 
 It is a framework for analyzing processes that are 32-bit and have protection against normal debuggers.
 
+It is written with the new C++20 standard in mind.
+
 Currently, it has the following features which will continue to be expanded upon in the future:
 
 # Dynamic System Calls
@@ -73,6 +75,8 @@ More to come in the future. Thanks for reading!
 Dieses Projekt startete am 13ten April 2021 als ein Projekt Beispiel für Ausbildungsbewerbungen. Für mich selbst Marvin D.
 
 IcyCore ist ein Analysen Framework um Prozesse die 32-bit sind und sich gegen herkömmlich Debugger schützen vernünftig analysieren zu können.
+
+Es wurde geschrieben mit dem neuen C++20 Standart im Hinterkopf.
 
 Momentan hat es diese Features wozu noch weiter hinzukommen werden:
 
