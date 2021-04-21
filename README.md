@@ -106,7 +106,9 @@ Diese Klasse wird benutzt um einfacher Memory Addressen benutzen zu können zum 
 
 • Die Addresse Dereferenzieren.
 
-• Die Addresse überprpfen ob eine bestimmte Byte Sequenz besteht.
+• Die Addresse überprüfen ob eine bestimmte Byte Sequenz besteht.
+
+Und noch mehr Funktionen die bald hinzugefügt werden!
 
 # MemoryModules
 
