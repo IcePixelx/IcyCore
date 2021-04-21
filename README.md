@@ -4,66 +4,72 @@
 
 This project started on the 13th April 2021 as an example for job applications for myself Marvin D.
 
-It is supposed to be an analyzing framework for analysing processes that are 32 bit and protect themselves against normal debuggers.
+It is a framework for analyzing processes that are 32 bit and have protection against normal debuggers.
 
-Currently it has following features which will be keep being expanded in the future:
+Currently, it has the following features which will continue to be expanded upon in the future:
 
 # Dynamic System Calls
 
-This allows you to perform system call for NTAPI functions.
-It removes the possible interaction of the process you wanna analyze intercepting calls via hooks on NTAPI functions.
+This allows you to perform system calls for NTAPI functions.
 
-Currently it has to be updated so it does not crash the IcyCore analyzing tool if the function you wanna perform a system call on is hooked.
+It removes the possible interactions of the process you want to analyze, intercepting calls via hooks on NTAPI functions.
 
-Easy solution is to manually rebuild the function body which will come very soon!
+Currently, it needs to be updated so that it does not crash the IcyCore analyzing tool if the function you want to perform a system call with is hooked.
 
-It works by allocating a new code section and currently copying the full function into that new code section and just calling that instead.
+The easy solution is to manually rebuild the function body which will be done very soon!
 
-Future implementation will be rebuilding the function body and copying that into the allocated code section.
+It works by allocating a new code section, copies the full function into that new code section, and calls that instead.
+
+Future implementation will include rebuilding the function body and copying that into the allocated code section.
 
 # Wow64Transition hooking (Heavensgate hooking)
 
 This allows us to dynamically hook any NTAPI function that performs a system call.
 
-System calls from 32 bit have to be converted to 64 bit.
+System calls from 32-bit must be converted to 64-bit..
 
-We hook the code snippet that is responsible for jumping into the 64 bit address space.
+First, we hook the code snippet that is responsible for jumping into the 64-bit address space.
 
-From there we manipulate the returnaddress so it points to our hooking function before actually returning to the callee.
+From there we manipulate the return address so that it points to our hooking function before ultimately returning to the callee.
 
-That allows us to mess with the parameters and return results before the actual callee receives them.
+Doing this allows us to modify the parameters and return results before the intended callee receives them.
 
 # MemoryAddress
 
-This allows you to handle memory addresses easier like offsetting them by x amount of bytes.
+This class allows you to handle memory addresses easier, such as:
 
-Dereferencing the memory address in the class.
+•	Offsetting them by x amount of bytes.
 
-Checking if the current address has certain bytes.
+•	Dereferencing the memory address in the class.
 
-And way more that is to come!
+•	Checking if the current address has certain bytes.
+
+And much more to come!
+
 
 # MemoryModules
 
-This is a class which will hold basic information about a module (dynamic linked library).
+This is a class that will hold basic information about a module (dynamic-linked libraries).
 
-It is in a namespace because there is sub-functions that will grab all the modules (dynamic linked libraries) that are currently loaded from the process environment block and push them back into an unordered_map.
+It is in a namespace because there are sub-functions that will grab all the modules that are currently loaded from the process environment block and push them back into an unordered_map.
 
-Allows you to get functions from the export table without calling WINAPI and find certain memory sequences from memory.
+It allows you to get functions from the export table without calling WINAPI and find certain sequences within the memory.
 
-More stuff is to come.
+More applications are to come.
+
 
 # Future goals
 
-A UI that allows you to dynamically hook any memory address that you supply to it.
+•	A UI that allows you to dynamically hook any memory address that you supply to it.
 
-Stealth module injection into any process
+•	Stealth module injection into any process
 
-Virtual Method and Table hooking.
+•	Virtual Method and Table hooking.
 
-Proper detour hooking.
+•	Proper detour hooking.
 
-More overall customizability via scripting or dll loading.
+•	More overall customizability via scripting or DLL loading.
+
 
 More to come in the future. Thanks for reading!
 
