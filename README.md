@@ -93,7 +93,7 @@ Zukünftige implementation wird seien das die Funktion nachgestellt wird und dan
 
 Dieses namespace erlaubt es uns jeden NTAPI Funktionen aufruf im Prozess abzufangen wenn dieser einen System Call aufruft.
 
-System calls müssen von 32 bit in 64 umgewandelt werden deshalb hooken wir die Code Sektion die dafür verantwortlich ist in den 64 bit Adress Space zu jumpen.
+System calls müssen von 32 bit in 64 bit umgewandelt werden deshalb hooken wir die Code Sektion die dafür verantwortlich ist in den 64 bit Adress Space zu jumpen.
 
 Von da aus manipulieren wir die Rückkehraddresse so das diese zur jeweiligen Ersatz Funktion hinführt bevor diese wieder zurück zum Aufrufer geht.
 
