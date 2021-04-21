@@ -77,67 +77,60 @@ More to come in the future. Thanks for reading!
 
 Dieses Projekt startete am 13ten April 2021 als ein Projekt Beispiel für Ausbildungsbewerbungen. Für mich selbst Marvin D.
 
-Es ist ein Analysen Framework um Prozesse die 32 bit sind und sich selbst gegen normale Debugger schützen analysieren zu können.
+IcyCore ist ein Analysen Framework um Prozesse die 32-bit sind und sich gegen herkömmlich Debugger schützen vernünftig analysieren zu können.
 
-Momentan hat es diese Features die noch weiter expandiert werden:
+Momentan hat es diese Features wozu noch weiter hinzukommen werden:
 
 # Dynamic System Calls
 
 Dynamic System Calls erlaubt uns direkt System Calls für NTAPI Funktionen durchzuführen
 
-Wenn wir normalerweise die Funktion aus dem Export Table holen und die so aufrufen könnte der Prozess diese abfangen. Das wird damit unterbunden.
+Wenn wir normalerweise die Funktion aus dem Export Table holen und die so aufrufen könnte der Prozess diese abfangen mit einer herkömmlichen Detour Hook.
 
-Momentan muss diese Library noch geupdated werden dar das IcyCore Analyzing Tool crashen wird wenn die Funktion die aufgerufen wird gehooked ist.
-
-Einfache Lösung für dies ist die Funktion einfach selber nachzustellen fast bald kommen wird!
+Die Methode wie der System Call durchgeführt wird muss noch geändert werden. Wenn die Funktion Detour Hooked ist mit der man einen System Call durchführen möchte wird das Programm abstürzen.
 
 Es funktioniert dar durch das es eine neue Code Sektion erstellt und die komplette Funktion einfach in die neues Code Sektion reinkopiert und diese anstattdessen aufruft.
 
-Zukünftige implementation wird seien das die Funktion nachgestellt wird und dann in eine neue Code Sektion kopiert wird und diese statdessen aufgerufen wird.
+Zukünftige implementation wird seien das die Funktion nachgestellt wird und dann in eine neue Code Sektion kopiert wird und diese stattdessen aufgerufen wird.
 
 # Wow64Transition hooking (Heavensgate hooking)
 
-Dieses namespace erlaubt es uns jeden NTAPI Funktionen aufruf im Prozess abzufangen wenn dieser einen System Call aufruft.
+Hiermit können wir jeden System Call abfangen der im Prozess stattfindet.
 
-System calls müssen von 32 bit in 64 bit umgewandelt werden deshalb hooken wir die Code Sektion die dafür verantwortlich ist in den 64 bit Adress Space zu jumpen.
+System calls müssen von 32-bit in 64-bit umgewandelt werden deshalb hooken wir die Code Sektion die dafür verantwortlich ist in den 64-bit Adress Space zu springen.
 
-Von da aus manipulieren wir die Rückkehraddresse so das diese zur jeweiligen Ersatz Funktion hinführt bevor diese wieder zurück zum Aufrufer geht.
+Von dort aus manipulieren wir die Rückkehraddresse so das diese zur jeweiligen Ersatz Funktion hinführt bevor diese wieder zurück zum Aufrufer geht.
 
-Das erlaubt uns die Argumente zu manipulieren und das return result zu verändern bevor der Aufrufer diese bekommt.
+Das erlaubt uns die Argumente zu manipulieren und das return result zu verändern bevor der Aufrufer dieses bekommt.
 
 # MemoryAddress
 
-Erlaubt es uns einfacher mit Memory Addressen umzugehen zum Beispiel diese um bytes zu offseten.
+Diese Klasse wird benutzt um einfacher Memory Addressen benutzen zu können.
 
-Man kann auch den Zeiger der in der Klasse angeben Dereferenzieren.
+Zum Beispiel kann man die Addresse um ein paar Bytes versetzen.
 
-Man kann überprüfung ob die momentane Addresse eine bestimmte Byte Sequenz hat.
+Man kann auch den Zeiger der in der Klasse angegeben ist Dereferenzieren.
 
-Und noch viel mehr das hinzugefügt wird.
+Ein anderer Zweck wäre es zu überprüfung ob die momentane Addresse eine bestimmte Byte Sequenz hat.
 
 # MemoryModules
 
-Dies ist eine Klasse was basische Informationen über Module besitzen wird. (dynamisch verknüpfte Bibliotheken)-
+Dies ist eine Klasse was basische Informationen über Modules (dynamisch verknüpfte Bibliotheken) besitzen wird.
 
 Es ist in einem namespace da es sub-funktionen gibt die alle Module aus dem Prozessblock holt und diese in eine unordered_map platziert.
 
 MemoryModules erlaubt es dir zum Bespiel Funktionen von einem Module aus dem Export Table zu holen ohne GetProcAddress aufzurufen.
 
-Noch mehr wird hinzugefügt zu dieser Klasse.
-
-
 # Zukünftige Ziele
 
 Ein User Interface was es einem erlaubt dynamische jede Memory Address zu hooken und zu überprüfen.
 
-Verstecke module injezierung in egal welchen Prozess.
+Versteckte Module injection in egal welchem Prozess.
 
 Virtuelle Methoden und Table hooking.
 
-Vernünftiges detour hooking..
+Vernünftiges Detour Hooking.
 
 Mehr Anpassbarkeit für das ganze Programm durch Skripting oder DLL loading.
-
-Und noch mehr was in Zukunft kommt.
 
 Danke für das lesen dieser README!
