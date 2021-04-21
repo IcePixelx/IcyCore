@@ -4,7 +4,7 @@
 
 This project started on the 13th April 2021 as an example for job applications for myself Marvin D.
 
-It is a framework for analyzing processes that are 32 bit-and have protection against normal debuggers.
+It is a framework for analyzing processes that are 32-bit and have protection against normal debuggers.
 
 Currently, it has the following features which will continue to be expanded upon in the future:
 
