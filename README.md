@@ -126,7 +126,7 @@ Ein User Interface was es einem erlaubt dynamische jede Memory Address zu hooken
 
 Verstecke module injezierung in egal welchen Prozess.
 
-Virtuam Methoden und Table hooking.
+Virtuelle Methoden und Table hooking.
 
 Vernünftiges detour hooking..
 
