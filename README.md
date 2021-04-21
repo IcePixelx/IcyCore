@@ -76,7 +76,7 @@ Dieses Projekt startete am 13ten April 2021 als ein Projekt Beispiel für Ausbil
 
 IcyCore ist ein Analysen Framework um Prozesse die 32-bit sind und sich gegen herkömmlich Debugger schützen vernünftig analysieren zu können.
 
-Es wurde geschrieben mit dem neuen C++20 Standart im Hinterkopf.
+Es wird geschrieben mit dem neuen C++20 Standart im Hinterkopf.
 
 Momentan hat es diese Features wozu noch weiter hinzukommen werden:
 
