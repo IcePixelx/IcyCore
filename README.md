@@ -44,9 +44,6 @@ This class allows you to handle memory addresses easier, such as:
 
 •	Checking if the current address has certain bytes.
 
-And much more to come!
-
-
 # MemoryModules
 
 This is a class that will hold basic information about a module (dynamic-linked libraries).
@@ -105,13 +102,13 @@ Das erlaubt uns die Argumente zu manipulieren und das return result zu veränder
 
 # MemoryAddress
 
-Diese Klasse wird benutzt um einfacher Memory Addressen benutzen zu können.
+Diese Klasse wird benutzt um einfacher Memory Addressen benutzen zu können zum Beispiel:
 
-Zum Beispiel kann man die Addresse um ein paar Bytes versetzen.
+•	Die Addresse um ein paar Bytes versetzten.
 
-Man kann auch den Zeiger der in der Klasse angegeben ist Dereferenzieren.
+• Die Addresse Dereferenzieren.
 
-Ein anderer Zweck wäre es zu überprüfung ob die momentane Addresse eine bestimmte Byte Sequenz hat.
+• Die Addresse überprpfen ob eine bestimmte Byte Sequenz besteht.
 
 # MemoryModules
 
@@ -123,14 +120,14 @@ MemoryModules erlaubt es dir zum Bespiel Funktionen von einem Module aus dem Exp
 
 # Zukünftige Ziele
 
-Ein User Interface was es einem erlaubt dynamische jede Memory Address zu hooken und zu überprüfen.
+• Ein User Interface was es einem erlaubt dynamische jede Memory Address zu hooken und zu überprüfen.
 
-Versteckte Module injection in egal welchem Prozess.
+• Versteckte Module injection in egal welchem Prozess.
 
-Virtuelle Methoden und Table hooking.
+• Virtuelle Methoden und Table hooking.
 
-Vernünftiges Detour Hooking.
+• Vernünftiges Detour Hooking.
 
-Mehr Anpassbarkeit für das ganze Programm durch Skripting oder DLL loading.
+• Mehr Anpassbarkeit für das ganze Programm durch Skripting oder DLL loading.
 
 Danke für das lesen dieser README!
