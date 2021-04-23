@@ -26,7 +26,7 @@ Future implementation will include rebuilding the function body and copying that
 
 This allows us to dynamically hook any NTAPI function that performs a system call.
 
-System calls from 32-bit must be converted to 64-bit..
+System calls from 32-bit must be converted to 64-bit.
 
 First, we hook the code snippet that is responsible for jumping into the 64-bit address space.
 
