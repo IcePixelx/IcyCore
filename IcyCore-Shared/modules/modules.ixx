@@ -175,6 +175,7 @@ export namespace Modulemanager
 				{
 					// If either the current byte equals to the byte in our pattern or our current byte in the pattern is a wildcard
 					// our if clause will be false.
+					_mm_prefetch(reinterpret_cast<const char*>(start_of_code_section[i + a] + 64), _MM_HINT_T0); // precache some data in L1.
 					if (start_of_code_section[i + a] != bytes_information.second[a] && bytes_information.second[a] != -1)
 					{
 						found_address = false;
