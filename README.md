@@ -2,7 +2,7 @@
 
 # English Version (Deutsche Version weiter unten.)
 
-This project started on the 13th April 2021 as an example for job applications for myself Marvin D.
+This project started on the 13th April 2021 as an example for job applications for myself.
 
 It is a framework for analyzing processes that are 32-bit and have protection against normal debuggers.
 
@@ -72,7 +72,7 @@ More to come in the future. Thanks for reading!
 
 # German Version
 
-Dieses Projekt startete am 13ten April 2021 als ein Projekt Beispiel für Ausbildungsbewerbungen. Für mich selbst Marvin D.
+Dieses Projekt startete am 13ten April 2021 als ein Projekt Beispiel für Ausbildungsbewerbungen. Für mich selbst.
 
 IcyCore ist ein Analysen Framework um Prozesse die 32-bit sind und sich gegen herkömmlich Debugger schützen vernünftig analysieren zu können.
 
